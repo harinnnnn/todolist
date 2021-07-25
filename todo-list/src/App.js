@@ -26,7 +26,7 @@ class App extends Component {
     const { input, todos } = this.state;
     this.setState({
       input: '', //인풋 비우고 concat을 사용하여 배열에 추가
-      todoos: todos.concat({
+      todos: todos.concat({
         id: this.id++,
         text: input,
         checked: false
@@ -41,12 +41,41 @@ class App extends Component {
     }
   }
 
+  handleToggle = (id) => {
+    const {todos} = this.state;
+
+    // 파라미터로 받은 id를 가지고 몇 번째 아이템인지 찾음
+    const index = todos.findIndex(todo => todo.id === id);
+    const selected = todos[index]; // 선택한 객체
+
+    const nextTodos = [...todos]; // 배열 복사
+
+    // 기존 값들을 복사하고, checked 값 덮어쓰기
+    nextTodos[index] = {
+      ...selected, 
+      checked: !selected.checked
+    };
+
+    this.setState ({
+      todos: nextTodos
+    });
+  }
+
+  handleRemove = (id) => {
+    const {todos} = this.state;
+    this.setState({
+      todos: todos.filter(todo => todo.id !== id)
+    });
+  }
+
   render() {
-    const {input} = this.state;
+    const {input, todos} = this.state;
     const {
       handleChange,
       handleCreate,
-      handleKeyPress
+      handleKeyPress,
+      handleToggle,
+      handleRemove
     } = this;
 
     return (
@@ -58,7 +87,7 @@ class App extends Component {
         onCreate={handleCreate}
         />
       )}>
-        <TodoItemList/>
+        <TodoItemList todos={todos} onToggle={handleToggle} onRemove={handleRemove}/>
       </TodoListTemplate>
     );
   }

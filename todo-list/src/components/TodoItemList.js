@@ -6,15 +6,31 @@ import React, {Component, component} from 'react';
 import TodoItem from './TodoItem';
 
 class TodoItemList extends Component {
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return this.props.todos !== nextProps.todos;
+    }
+
     render() {
         const { todos, onToggle, onRemove } = this.props;
         /*todos: todo 객체들이 모여있는 배열, onToggle: 체크박스를 켜고 끄는 함수, onRemove: 아이템 삭제함수*/
+    
+        const todoList = todos.map(
+            ({id, text, checked}) => (
+                <TodoItem
+                id={id}
+                text={text}
+                checked={checked}
+                onToggle={onToggle}
+                onRemove={onRemove}
+                key={id} // 배열 렌더링 시 key 값이 꼭 있어야 함!
+                />
+            )
+        );
 
         return (
             <div>
-                <TodoItem text="안녕"/>
-                <TodoItem text="리액트"/>
-                <TodoItem text="반가워"/>
+                {todoList}
             </div>
         );
  }
